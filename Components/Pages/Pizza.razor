@@ -1,0 +1,11 @@
+﻿@page "/pizza"
+@rendermode InteractiveServer // server side rendering
+<PageTitle>Pizza</PageTitle>
+
+<h1>Welcome to Hot Pizza</h1>
+
+<p>@welcomeMessage</p>
+
+@code {
+    private string welcomeMessage = "However you like your pizzas, we can deliver them fast and hot!";
+}

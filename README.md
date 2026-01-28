@@ -61,6 +61,14 @@ In this mode, the component code is downloaded to the browser and run client-sid
 3. The currentCount is incremented.
 4. The component is rendered to show the updated count.
 
+## The @page directive:
+This directive provides a route template to Blazor. At runtime, Blazor locates a page to render by matching this template to the URL that the user requested. In this case, it might match a URL of the form http://yourdomain.com/index.
+
+## The @code directive: 
+This directive declares that the text in the following block is C# code. You can put as many code blocks as you need in a component. You can define component class members in these code blocks and set their values from calculation, data lookup operations, or other sources. In this case, the code defines a single component member called welcomeMessage and sets its string value.
+## Member access directives: 
+If you want to include the value of a member in your rendering logic, use the @ symbol followed by a C# expression, such as the name of the member. In this case, the @welcomeMessage or @counter directive is used to render the value of the welcomeMessage or counter member in the <p> tags.
+
 ## events
 Blazor components can handle different kinds of UI events using C# and then render updates based on the events using Razor syntax. Blazor provides several patterns for defining event callbacks, including both synchronous and asynchronous callbacks.
 Blazor also makes it easy to create two-way data bindings between the values of UI elements and your code.
@@ -123,4 +131,12 @@ Some Razor directives appear at the beginning of a new line, like @page and @cod
 
 # creating new component pages
 - when creating new pages donot forget to add the directory or file to the _Import.razor page
-- @using LearnBlazor.<<folder name>>
+- @using LearnBlazor.<folder name>
+
+## Blazor hosting models
+There are two hosting models for code in Blazor apps:
+
+- Blazor Server: In this model, the app is executed on the web server within an ASP.NET Core app. 
+On the client side, UI updates, events, and JavaScript calls, are sent through a SignalR connection between the client and the server.
+- Blazor WebAssembly: In this model, the Blazor app, its dependencies, and the .NET runtime are downloaded and run on the browser.
+
