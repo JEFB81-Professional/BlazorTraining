@@ -1,0 +1,12 @@
+@page "/input"
+@rendermode InteractiveServer // server side rendering
+
+<PageTitle>Input</PageTitle>
+<h1>Input</h1>
+<input @bind="text" />
+<button @onclick="() => text = string.Empty">Clear</button>
+<p>@text</p>
+
+@code {
+    string text = "";
+}

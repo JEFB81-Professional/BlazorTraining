@@ -51,3 +51,58 @@ In other words:
 2. The IncrementCount method is called.
 3. The currentCount is incremented.
 4. The component is rendered to show the updated count.
+
+## events
+Blazor components can handle different kinds of UI events using C# and then render updates based on the events using Razor syntax. Blazor provides several patterns for defining event callbacks, including both synchronous and asynchronous callbacks.
+Blazor also makes it easy to create two-way data bindings between the values of UI elements and your code.
+
+## Data binding and events
+- render the value of a C# expression in Razor, you use a leading @ character. @currentCount
+- you can also be explicit about the beginning and ending of the expression using parens.  @(currentCount)
+## control flow
+- using a C# if-statement @if (currentCount > 3) {}
+- loop over data and render a list of items:  
+   @foreach (var item in items){ <li>@item.Name</li> }
+
+## Handle events
+- Blazor components often handle UI events. To specify an event callback for an event from a UI element, you use an attribute that starts with @on and ends with the event name.
+-  like @onchange, @oninput, and so on.
+- Event handling methods can be synchronous or asynchronous
+
+## lambda expressions
+- <button class="btn btn-primary" @onclick="() => currentCount++">Click me</button>
+
+## event argument 
+- you can access the value of an input element that changed,
+- Blazor will automatically render the component with its new state, so the message is displayed after the input changes
+- like this:
+
+```csharp
+<input @onchange="InputChanged" />
+<p>@message</p>
+
+@code {
+    string message = "";
+
+    void InputChanged(ChangeEventArgs e)
+    {
+        message = (string)e.Value;
+    }
+}
+```
+
+## data binding
+- Often you want the value of a UI element to be bound to a particular value in code. 
+  When the value of the UI element changes, the code value should change, and when the code value changes the UI element should display the new value.
+  bind a UI element to a particular value in code using the @bind attribute. For example:
+  ```csharp
+  <input @bind="text" />
+  <button @onclick="() => text = string.Empty">Clear</button>
+  <p>@text</p>
+
+  @code {
+    string text = "";
+  }
+  ```
+  - When you change the value of the input, the text field is updated with the new value. 
+    And when you change the value of the text field by clicking the Clear button, the value of the input is also cleared.
