@@ -1,7 +1,15 @@
-﻿@page "/"
+﻿@* 
+** The @page directive at the top specifies the route for this page, 
+so that the Home component is displayed when the user navigates to the root of the app. 
+*@
+
+@page "/"
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@*<Counter /> adding the component with a parameter passing its value*@
+<Counter IncrementAmount="10" />
