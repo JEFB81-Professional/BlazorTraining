@@ -1,0 +1,13 @@
+﻿@page "/pizzatopping"
+@rendermode InteractiveServer // server side rendering
+ 
+<PageTitle>Pizza Topping</PageTitle>
+
+<h2>New Topping: @Topping.Name</h2>
+
+<p>Ingredients: @Topping.Ingredients</p>
+
+@code {
+    [Parameter]
+    public Topping Topping { get; set; }
+}

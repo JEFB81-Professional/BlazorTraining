@@ -34,6 +34,10 @@
 @code {
     private int currentCount = 0;
 
+    /// <summary>
+    /// The amount to increment the counter by.
+    /// passed as a parameter from the parent component
+    /// </summary>
     [Parameter]
     public int IncrementAmount { get; set; } = 1; // default increment amount when parameter not provided
 

@@ -1,0 +1,22 @@
+﻿
+
+@page "/newpizza"
+@rendermode InteractiveServer // server side rendering
+<PageTitle>New Pizza</PageTitle>
+@*
+Sharing information with other components by using component parameters.
+Start by defining the component parameter in the child component. 
+You define it as a C# public property and decorate it with the [Parameter] attribute:
+*@
+
+<h2>New Pizza: @PizzaName</h2>
+
+<p>@PizzaDescription</p>
+
+@code {
+    [Parameter]
+    public string PizzaName { get; set; } = "Unknown Pizza";
+    
+    [Parameter]
+    public string PizzaDescription { get; set; } = "The best pizza you've ever tasted.";
+}

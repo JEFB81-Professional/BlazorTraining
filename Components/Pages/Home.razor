@@ -14,4 +14,12 @@ Welcome to your new app.
 @*<Counter /> adding the component with a parameter passing its value*@
 <Counter IncrementAmount="10" />
 
-
+@*<Counter /> passing data using component parameters*@
+<NewPizza PizzaName="Margherita"
+    PizzaDescription="Classic pizza with tomatoes, mozzarella cheese, fresh basil, salt, and extra-virgin olive oil." />
+@*You set simple components directly.
+ With a parameter based on a custom class, you use inline C# code to create a new instance of that class and set its values:*@
+@* call the razor page, be aware that the parameter is of type Topping,
+  by using for example the name of PizzaTopping as a model, then the compiler get confused and you get build errors*@
+@* a class is passed as a parameter*@
+<PizzaTopping Topping="@(new Topping() { Name = "Chilli Sauce", Ingredients = "Three kinds of chilli." })" />
