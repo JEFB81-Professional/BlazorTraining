@@ -1,0 +1,37 @@
+﻿@page "/todolist"  
+@rendermode InteractiveServer // server side rendering
+<PageTitle>Todo List</PageTitle>
+
+<h3>Todo List</h3>
+
+<input @bind="newTodoItem" />
+<button @onclick="AddTodoItem">Add todo item</button>
+
+@if(todoItems.Count == 0)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+    @foreach (var todo in todoItems)
+    {
+        <li>@todo.Title</li>
+    }
+</ul>
+}
+
+@code {
+    private List<TodoItem> todoItems = new ();
+    string newTodoItem = "";
+    void AddTodoItem()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodoItem))
+        {
+            todoItems.Add( new TodoItem { Title = newTodoItem } );
+            // after adding clear the input field
+            newTodoItem = string.Empty;
+        }
+    }
+
+}

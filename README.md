@@ -45,6 +45,15 @@ In other words:
 - Then it becomes interactive via a live SignalR connection back to the server
 - All UI updates occur server‑side, but the browser sees changes instantly
 
+To handle UI events from a component and to use data binding, the component must be interactive. 
+By default, Blazor components render statically from the server, which means they generate HTML in response to requests and are otherwise unable to handle UI events.
+## rendermode to a component instance:
+- <Counter @rendermode="InteractiveServer" />
+
+## Alternatively rendermode
+Blazor components can use the InteractiveWebAssembly render mode to render interactively from the client.
+In this mode, the component code is downloaded to the browser and run client-side using a WebAssembly-based .NET runtime.
+
 ### Each time you select the Click me button:
 
 1. The onclick event is fired.
@@ -106,3 +115,12 @@ Blazor also makes it easy to create two-way data bindings between the values of 
   ```
   - When you change the value of the input, the text field is updated with the new value. 
     And when you change the value of the text field by clicking the Clear button, the value of the input is also cleared.
+
+## Razor directives
+These are reserved keywords in Razor syntax that influence how a Razor file is compiled. 
+Razor directives always begin with the @ character. 
+Some Razor directives appear at the beginning of a new line, like @page and @code, while other are attributes that can be applied to elements as attributes, like @bind. more: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-10.0
+
+# creating new component pages
+- when creating new pages donot forget to add the directory or file to the _Import.razor page
+- @using LearnBlazor.<<folder name>>
