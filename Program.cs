@@ -1,3 +1,4 @@
+using LearnBlazor.AppState;
 using LearnBlazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+    // Add services to the container
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+// Add the AppState class
+// Now, in any component where you want to set or retrieve AppState values, you can inject the class, and then access its properties.
+builder.Services.AddScoped<PizzaState>();
 
 var app = builder.Build();
 

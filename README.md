@@ -140,3 +140,57 @@ There are two hosting models for code in Blazor apps:
 On the client side, UI updates, events, and JavaScript calls, are sent through a SignalR connection between the client and the server.
 - Blazor WebAssembly: In this model, the Blazor app, its dependencies, and the .NET runtime are downloaded and run on the browser.
 
+# Share information by using cascading parameters
+Component parameters work well when you want to pass a value to the immediate child of a component. Things become awkward when you have a deep hierarchy with children of children and so on. Component parameters aren't automatically passed to grandchild components from ancestor components or further down the hierarchy. To handle this problem elegantly, Blazor includes cascading parameters. When you set the value of a cascading parameter in a component, its value is automatically available to all descendant components to any depth.
+
+# syntax cascading parameter value
+Using Cascading Values to share data with descendant components.
+- Razor interprets Value="Buy One Get One Free" as C# code, not a literal.
+- you need to wrap the string in parentheses and double quotes to indicate that it is a string literal.
+- the component parameters must be explicitly marked as C# strings using @"".
+<CascadingValue Name="DealName" Value="@\"Buy One Get One Free\"">
+    <SpecialOffer />
+</CascadingValue>
+- other
+<CascadingValue Name="DealName" Value="@("Buy One Get One Free")">
+    <SpecialOffer />
+</CascadingValue>
+
+
+# Share information by using AppState
+Another approach to sharing information between different components is to use the AppState pattern. You create a class that defines the properties you want to store, and register it as a scoped service. In any component where you want to set or use the AppState values, you inject the service, and then you can access its properties. 
+Unlike component parameters and cascading parameters, values in AppState are available to all components in the application, even components that aren't children of the component that stored the value.
+```csharp
+// create state class 
+public class PizzaSalesState
+{
+    public int PizzasSoldToday { get; set; }
+}
+You would add the class as a scoped service in the Program.cs file:
+...
+// Add services to the container
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+// Add the AppState class
+builder.Services.AddScoped<PizzaSalesState>();
+...
+
+// use in class state in the page
+@page "/"
+@inject PizzaSalesState SalesState
+
+<h1>Welcome to Blazing Pizzas</h1>
+
+<p>Today, we've sold this many pizzas: @SalesState.PizzasSoldToday</p>
+
+<button @onclick="IncrementSales">Buy a Pizza</button>
+
+@code {
+    private void IncrementSales()
+    {
+        SalesState.PizzasSoldToday++;
+    }
+}
+
+```

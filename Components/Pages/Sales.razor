@@ -1,0 +1,16 @@
+﻿@page "/sales"
+@rendermode InteractiveServer // server side rendering
+@using LearnBlazor.AppState
+@inject PizzaState SalesState
+<PageTitle>Sales</PageTitle>
+<h2>Pizza Sales</h2>
+<p>Today, we've sold this many pizzas: @SalesState.PizzasSoldToday</p>
+<button @onclick="IncrementSales">Buy a Pizza</button>
+
+@code {
+    private void IncrementSales()
+    {
+        SalesState.SellPizza();
+    }     
+
+}
