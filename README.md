@@ -1,4 +1,237 @@
-## Razor components?
+## EditContext on EditForm
+The EditForm tracks the state of the current object that is acting as a model, including which fields were changed and their current values, by using an EditContext object.
+The EditContext object is passed to the submit events as a parameter. An event handler can use the Model field in this object to retrieve the user's input.
+```csharp
+<EditForm Model="@shirt" OnSubmit="ValidateData">
+    <!-- Omitted for brevity -->
+    <input type="submit" class="btn btn-primary" value="Save"/>
+    <p></p>
+    <div>@Message</div>
+</EditForm>
+
+@code {
+    private string Message = String.Empty;
+
+    // Omitted for brevity
+
+    private async Task ValidateData(EditContext editContext)
+    {
+        if (editContext.Model isn't Shirt shirt)
+        {
+            Message = "T-Shirt object is invalid";
+            return;
+        }
+
+        if (shirt is { Color: ShirtColor.Red, Size: ShirtSize.ExtraLarge })
+        {
+            Message = "Red T-Shirts not available in Extra Large size";
+            return;
+        }
+
+        if (shirt is { Color: ShirtColor.Blue, Size: <= ShirtSize.Medium)
+        {
+            Message = "Blue T-Shirts not available in Small or Medium sizes";
+            return;
+        }
+
+        if (shirt is { Color: ShirtColor.White, Price: > 50 })
+        {
+            Message = "White T-Shirts must be priced at 50 or lower";
+            return;
+        }
+
+        // Data is valid
+        // Save the data
+        Message = "Changes saved";
+    }
+}
+```
+# submit events
+When an EditForm is submitted, it runs these three events:
+
+- OnValidSubmit: This event is triggered if the input fields successfully pass the validation rules defined by their validation attributes.
+- OnInvalidSubmit: This event is triggered if any of the input fields on the form fail the validation defined by their validation attributes.
+- OnSubmit: This event occurs when the EditForm is submitted regardless of whether all of the input fields are valid or not.
+
+The OnValidSubmit and OnInvalidSubmit events are useful for an EditForm that implements basic validation at the individual input field level. 
+-  cross-checking one input field against another to ensure a valid combination of values, then consider using the OnSubmit event.
+** An EditForm can either handle the OnValidSubmit and OnInvalidSubmit pair of events or the OnSubmit event but not all three. 
+# JavaScript or Blazor
+You can also trap JavaScript events such as onchange and oninput, and the Blazor equivalent @onchange and @oninput events for many controls in an EditForm. 
+- to examine and validate data programmatically, on a field-by-field basis, before the user submits the form. 
+# Handle form submission
+-  When the changes are complete, you can submit the form to validate the data on the server and save the changes.
+Blazor supports two types of validation; declarative and programmatic. 
+
+## declarative
+- Declarative validation rules operate on the client, in the browser. 
+They're useful for performing basic client-side validation before data is transmitted to the server.
+- The client-side validation traps basic user input errors and prevents many cases of invalid data being sent to the server for processing. 
+## programmatic
+-  Server-side validation is useful for handling complex scenarios that aren't available with declarative validation, such as cross-checking the data in a field against data from other sources. 
+-  Server-side validation ensures that a user request to save data doesn't attempt to bypass data validation and store incomplete or corrupt data.
+# using model in EditForm
+.NET class
+```csharp
+public enum ShirtColor
+{
+    Red, Blue, Yellow, Green, Black, White
+};
+
+public enum ShirtSize
+{
+    Small, Medium, Large, ExtraLarge
+};
+
+public class Shirt
+{
+    public ShirtColor Color { get; set; }
+    public ShirtSize Size { get; set; }
+    public decimal Price;
+}
+// razor page using the model
+<EditForm Model="@shirt">
+  <label>
+        <h3>Size</h3>
+        <InputRadioGroup Name="size" @bind-Value=shirt.Size> // bind to the value of the model element
+            @foreach(var shirtSize in Enum.GetValues(typeof(ShirtSize)))
+            {
+                <label>@shirtSize:
+                    <InputRadio Name="size" Value="@shirtSize"></InputRadio>
+                </label>
+                <br />
+            }
+        </InputRadioGroup>
+    </label>
+    ...
+    // the same for the color
+     <label>
+        <h3>Color</h3>
+        <InputRadioGroup Name="color" @bind-Value=shirt.Color>
+            @foreach(var shirtColor in Enum.GetValues(typeof(ShirtColor)))
+            {
+                <label>@shirtColor:
+                    <InputRadio Name="color" Value="@shirtColor"></InputRadio>
+                </label>
+                <br />
+            }
+        </InputRadioGroup>
+    </label>
+    ... 
+    <label>
+        <h3>Price</h3>
+        <InputNumber @bind-Value=shirt.Price min="0" max="100" step="0.01"></InputNumber>
+    </label>
+</EditForm>
+
+@code {
+    private Shirt shirt = new Shirt
+    {
+        Size = ShirtSize.Large,
+        Color = ShirtColor.Blue,
+        Price = 9.99M
+    };
+}
+# Blazor input controls
+Blazor has its own set of components designed to work specifically with the <EditForm> element and support data binding among other features. 
+| Input component            | Rendered as (HTML)                 |
+|----------------------------|------------------------------------|
+| InputCheckbox              | <input type="checkbox">            |
+| InputDate<TValue>          | <input type="date">                |
+| InputFile                  | <input type="file">                |
+| InputNumber<TValue>        | <input type="number">              |
+| InputRadio<TValue>         | <input type="radio">               |
+| InputRadioGroup<TValue>    | Group of child radio buttons       |
+| InputSelect<TValue>        | <select>                           |
+| InputText                  | <input>                            |
+| InputTextArea              | <textarea>                         |
+
+Any unrecognized non-Blazor attributes are passed unchanged to the HTML renderer. This means you can utilize HTML input element attributes.
+you can add the min, max, and step attributes to an InputNumber component, and they function correctly as part of the rendered <input type="number"> element. 
+# Blazor Forms
+- The facilities the <form> and <input> elements provide are simple but relatively primitive. Blazor extends the capabilities of forms with its <EditForm> component. Additionally, Blazor provides a series of specialized input elements that you can use to format and validate the data the user enters
+## What is an EditForm?
+An EditForm is a Blazor component that fulfills the role of an HTML form on a Blazor page. The main differences between an EditForm and an HTML form are:
+
+- Data binding: You can associate an object with an EditForm. 
+  The EditForm acts like a view of the object for data entry and display purposes.
+- Validation: An EditForm provides extensive and extensible validation capabilities. 
+  You can add attributes to the elements in an EditForm that specify validation rules. 
+  The EditForm applies these rules automatically. This functionality is described in a later unit in this module.
+- Form submission: An HTML form sends a post request to a form handler when the form is submitted. 
+  This form handler is expected to perform the submit process, and then display any results. 
+  An EditForm follows the Blazor event model; 
+  you specify a C# event handler that captures the OnSubmit event. 
+  The event handler performs the submit logic.
+- Input elements: An HTML form uses an <input> control to gather user input, and a submit button to post the form for processing. 
+  An EditForm can use these same elements, but Blazor provides a library of input components that have other features, such as built-in validation and data binding.
+## Create an EditForm with data binding
+The <EditForm> element supports data binding with the Model parameter. 
+You specify an object as the argument for this parameter. 
+The input elements in the EditForm can bind to properties and fields exposed by the model by using the @bind-Value parameter. 
+Model
+```csharp
+public class WeatherForecast
+{
+    public DateTime Date { get; set; }
+
+    public int TemperatureC { get; set; }
+
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+    public string Summary { get; set; }
+}
+```
+- razor page
+```csharp
+@page "/fetchdata"
+
+@using WebApplication.Data
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<input type="number" width="2" min="0" max="@upperIndex" @onchange="ChangeForecast" value="@index"/>
+
+<EditForm Model=@currentForecast>
+    <InputDate @bind-Value=currentForecast.Date></InputDate>
+    <InputNumber @bind-Value=currentForecast.TemperatureC></InputNumber>
+    <InputText @bind-Value=currentForecast.Summary></InputText>
+</EditForm>
+
+@code {
+    private WeatherForecast[] forecasts;
+    private WeatherForecast currentForecast;
+    private int index = 0;
+    private int upperIndex = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        currentForecast = forecasts[index];
+        upperIndex = forecasts.Count() - 1;
+    }
+
+    private async Task ChangeForecast(ChangeEventArgs e)
+    {
+        index = int.Parse(e.Value as string);
+        if (index <= upperIndex && index >= 0)
+        {
+            currentForecast = forecasts[index];
+        }
+    }
+}
+- the OnInitialized event populates an array of WeatherForecast objects by using an external service.
+- The currentForecast variable is set to the first item in the array; 
+  which is the object displayed by the EditForm. The user can cycle through the array using the numeric input field above the EditForm on the page. 
+  This field's value is used as an index of the array, and the currentForecast variable is set to the object found at that index by using the ChangeForecast method.
+```
+## to-way-binding
+The EditForm component implements two-way data binding. The form displays the values retrieved from the mode. However, if the user updates these values in the form, the values are pushed back to the model.
+
+
+
+# Razor components?
 - the files that make up the project are .razor files.
 - At compile time, each Razor component is built into a C# class. 
 
